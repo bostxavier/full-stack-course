@@ -12,6 +12,14 @@ const Button = ({value, setValue, text}) => {
   )
 }
 
+const StatisticLine = ({text, value}) => {
+  return (
+    <div>
+      {text} {value}
+    </div>
+  )
+}
+
 const Statistics = ({good, neutral, bad}) => {
   return (
     <>
@@ -20,27 +28,14 @@ const Statistics = ({good, neutral, bad}) => {
       </h1>
       {(good + neutral + bad) > 0 ? (
         <>
-          <div>
-            good {good}
-          </div>
-          <div>
-            neutral {neutral}
-          </div>
-          <div>
-            bad {bad}
-          </div>
-          <div>
-            all {good + neutral + bad}
-          </div>
-          <div>
-            average {(good - bad) / (good + neutral + bad)}
-          </div>
-          <div>
-            positive {good / (good + neutral + bad) * 100} %
-          </div>
+          <StatisticLine text="good" value={good} />
+          <StatisticLine text="neutral" value={neutral} />
+          <StatisticLine text="bad" value={bad} />
+          <StatisticLine text="all" value={good + neutral + bad} />
+          <StatisticLine text="average" value={(good - bad) / (good + neutral + bad)} />
+          <StatisticLine text="positive" value={`${good / (good + neutral + bad) * 100} %`} />
         </>
-      )
-      :
+      ) :
       (
         <div>
           No feedback given
