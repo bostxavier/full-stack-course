@@ -26,14 +26,26 @@ const App = () => {
     setPoints(copy)
   }
 
+  const maxVotesIdx = () => {
+    const argMax = points.reduce(
+      (currArgMax, value, index) => value > points[currArgMax] ? index : currArgMax,
+      0 
+    )
+    return argMax
+  }
+
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       <div>{anecdotes[selected]}</div>
       <div>has {points[selected]} votes</div>
       <div>
         <button onClick={voteForAnecdote}>vote</button>
         <button onClick={selectAnecdote}>next anecdote</button>
       </div>
+      <h1>Anecdote with most votes</h1>
+      <div>{anecdotes[maxVotesIdx()]}</div>
+      <div>has {points[maxVotesIdx()]} votes</div>
     </div>
   )
 }
