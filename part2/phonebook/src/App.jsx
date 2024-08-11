@@ -30,9 +30,6 @@ const App = () => {
       })
     }, [])
 
-  const filteredPersons = persons.filter(
-    person => person.name.toLowerCase().startsWith(filter.toLowerCase()))
-
   const addPerson = (event) => {
     event.preventDefault()
 
@@ -67,7 +64,7 @@ const App = () => {
         newNumber={newNumber}
         handleNumberChange={handleNumberChange} />
       <h2>Numbers</h2>
-      <Persons filteredPersons={filteredPersons} />
+      <Persons persons={persons} filter={filter} setPersons={setPersons} />
     </div>
   )
 }
