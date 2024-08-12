@@ -10,7 +10,8 @@ const Persons = ({persons, setPersons, filter}) => {
                 .then(response => {
                     if (response.statusText === 'OK')
                         setPersons(persons.filter(p => p.id !== person.id))
-                })}
+                 })
+    }
 
     const filteredPersons = persons.filter(
         person => person.name.toLowerCase().startsWith(filter.toLowerCase()))

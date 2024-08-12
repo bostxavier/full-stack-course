@@ -46,10 +46,16 @@ const App = () => {
             setPersons(persons.map(p => {
               return p.id !== changedPerson.id ? p : changedPerson
             }))
-            setMessage(`Added ${changedPerson.name}`)
-            setTimeout(() => {
-              setMessage(null)
-            }, 5000)
+            setMessage({
+              text: `Added ${changedPerson.name}`,
+              success: true})
+            setTimeout(() => setMessage(null), 5000)
+          })
+          .catch(error => {
+            setMessage({
+              text: `Information of ${alreadyRecorded.name} has already been removed from the server`,
+              success: false})
+            setTimeout(() => setMessage(null), 5000)
           })
         }
       }
@@ -61,10 +67,10 @@ const App = () => {
       personService.create(personObject)
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
-          setMessage(`Added ${returnedPerson.name}`)
-          setTimeout(() => {
-            setMessage(null)
-          }, 5000)
+          setMessage({
+            text: `Added ${returnedPerson.name}`,
+            success: true})
+          setTimeout(() => setMessage(null), 5000)
         })
     }
 
