@@ -7,7 +7,7 @@ const App = () => {
   const [countries, setCountries] = useState([])
   const [firstLetters, setFirstLetters] = useState('')
   const [selCountries, setSelCountries] = useState([])
-  const [country, setCountry] = useState(null)
+  const [showSelCountry, setShowSelCountry] = useState({})
 
   const handleChange = (event) => {
     setFirstLetters(event.target.value)
@@ -17,8 +17,19 @@ const App = () => {
     const selection = countries.filter(c => {
       return c.toLowerCase().startsWith(firstLetters.toLowerCase())
     })
+    const details = selection.reduce((acc, v) => {
+      acc[v] = false
+      return acc
+    }, {})
+    setShowSelCountry(details)
     setSelCountries(selection)
     }, [firstLetters])
+
+  const showDetails = (c) => {
+    const details = {...showSelCountry}
+    details[c] = !details[c]
+    setShowSelCountry(details)
+  }
 
   useEffect(() => {
     axios.get('https://studies.cs.helsinki.fi/restcountries/api/all')
@@ -43,7 +54,13 @@ const App = () => {
             (
               <>
                 {selCountries.map(c => {
-                  return <div key={c}>{c}</div>
+                  return (
+                    <div key={c}>
+                      {c}{' '}
+                      <button onClick={() => showDetails(c)}>{showSelCountry[c] === true ? 'hide' : 'show'}</button>
+                      {showSelCountry[c] && <Country country={c} />}
+                    </div>
+                  )
                 })}
               </>
             )}
@@ -53,3 +70,4 @@ const App = () => {
 }
 
 export default App
+
