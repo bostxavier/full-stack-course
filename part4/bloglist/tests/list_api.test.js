@@ -51,6 +51,20 @@ test('a valid blog can be added ', async () => {
   assert(titles.includes('Go To Statement Considered Harmful'))
 })
 
+test('missing "likes" property defaults to "0" whenever a valid blog is added', async() => {
+  const newBlog = {
+    title: 'Go To Statement Considered Harmful',
+    author: 'Edsger W. Dijkstra',
+    url: 'https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf'
+  }
+
+  const response = await api
+    .post('/api/blogs')
+    .send(newBlog)
+
+  assert.strictEqual(response.body.likes, 0)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
