@@ -35,6 +35,22 @@ test('identifier property is named "id", not "_id"', async () => {
   assert(!('_id' in firstBlog))
 })
 
+test('a valid blog can be added ', async () => {
+  await api
+    .post('/api/blogs')
+    .send(helper.newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+
+  const titles = response.body.map(r => r.title)
+
+  assert.strictEqual(response.body.length, helper.initialBlogs.length + 1)
+
+  assert(titles.includes('Go To Statement Considered Harmful'))
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
