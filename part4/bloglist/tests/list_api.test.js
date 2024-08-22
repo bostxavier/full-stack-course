@@ -1,4 +1,4 @@
-const { test, after, beforeEach } = require('node:test')
+const { describe, test, after, beforeEach } = require('node:test')
 const assert = require('node:assert')
 const supertest = require('supertest')
 const mongoose = require('mongoose')
@@ -109,6 +109,57 @@ test('deletion of a blog succeeds with status code 204 if id is valid', async ()
 
   const titles = blogsAtEnd.map(r => r.title)
   assert(!titles.includes(blogToDelete.title))
+})
+
+describe('updating a blog', () => {
+  test('succeeds with a valid id', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+
+    const increment = 10
+
+    const blogToUpdate = blogsAtStart[0]
+    const updatedBlog = { ...blogToUpdate, likes: blogToUpdate.likes + increment }
+
+    const response = await api
+      .put(`/api/blogs/${updatedBlog.id}`)
+      .send(updatedBlog)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    assert.deepStrictEqual(response.body.likes, blogToUpdate.likes + increment)
+  })
+
+  test('fails with statuscode 404 if blog does not exist', async () => {
+    const validNonexistingId = await helper.nonExistingId()
+
+    const blogsAtStart = await helper.blogsInDb()
+
+    const increment = 10
+
+    const blogToUpdate = blogsAtStart[0]
+    const updatedBlog = { ...blogToUpdate, likes: blogToUpdate.likes + increment }
+
+    await api
+      .put(`/api/blogs/${validNonexistingId}`)
+      .send(updatedBlog)
+      .expect(404)
+  })
+
+  test('fails with statuscode 400 if id is invalid', async () => {
+    const invalidId = '66c757b3a4d772aff0283ad'
+
+    const blogsAtStart = await helper.blogsInDb()
+
+    const increment = 10
+
+    const blogToUpdate = blogsAtStart[0]
+    const updatedBlog = { ...blogToUpdate, likes: blogToUpdate.likes + increment }
+
+    await api
+      .put(`/api/blogs/${invalidId}`)
+      .send(updatedBlog)
+      .expect(400)
+  })
 })
 
 after(async () => {
