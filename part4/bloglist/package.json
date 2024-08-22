@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
-    "test": "node --test",
+    "start": "cross-env NODE_ENV=production node index.js",
+    "dev": "cross-env NODE_ENV=development nodemon index.js",
+    "test": "cross-env NODE_ENV=test node --test",
     "lint": "eslint ."
   },
   "repository": {
@@ -21,9 +21,11 @@
   "homepage": "https://github.com/bostxavier/full-stack-course#readme",
   "devDependencies": {
     "@stylistic/eslint-plugin-js": "^2.6.4",
+    "cross-env": "^7.0.3",
     "eslint": "^9.9.0",
     "globals": "^15.9.0",
-    "nodemon": "^3.1.4"
+    "nodemon": "^3.1.4",
+    "supertest": "^7.0.0"
   },
   "dependencies": {
     "cors": "^2.8.5",
