@@ -1,6 +1,6 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Inhib3N0IiwiaWQiOiI2NmM4OWE2MWNlNTg4N2FkNGQzNTVjMWMiLCJpYXQiOjE3MjQ0MzAwNDN9.tPx2D3DBevD8BuWtpzSZo06U4JZRm7a8vG32B0SN-_g
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImhlbGxhcyIsImlkIjoiNjZjOGJkZTc1OTczN2YzN2UzOWQ5N2UyIiwiaWF0IjoxNzI0NDMzMjkyfQ.E85GjhobsN_zUU2SsC7bs9mflnxA-PZr2hLRXTwnzUA
 
 {
     "title": "Comment configurer et utiliser efficacement l’historique bash",
