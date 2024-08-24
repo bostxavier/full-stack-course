@@ -118,3 +118,30 @@ describe('favorite blog', () => {
     )
   })
 })
+
+describe('finding the author who has the largest amount of blogs', () => {
+  test('succeeds with a big list', () => {
+    const result = listHelper.mostBlogs(blogs)
+    assert.deepStrictEqual(result,
+      {
+        author: 'Robert C. Martin',
+        blogs: 3
+      }
+    )
+  })
+
+  test('succeeds when list has only one blog', () => {
+    const result = listHelper.mostBlogs(listWithOneBlog)
+    assert.deepStrictEqual(result,
+      {
+        author: 'Edsger W. Dijkstra',
+        blogs: 1
+      }
+    )
+  })
+
+  test('results in `null` with an empty list', () => {
+    const result = listHelper.mostBlogs([])
+    assert.strictEqual(result, null)
+  })
+})
