@@ -7,14 +7,22 @@ const app = require('../app')
 const api = supertest(app)
 
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 beforeEach(async () => {
-  await Blog.deleteMany({})
+  await User.deleteMany({})
+  await User.insertMany(helper.initialUsers)
+  const user = await User.findOne({ username: 'hellas' })
 
+  await Blog.deleteMany({})
   const blogObjects = helper.initialBlogs
-    .map(blog => new Blog(blog))
-  const promiseArray = blogObjects.map(blog => blog.save())
-  await Promise.all(promiseArray)
+    .map(blog => {
+      const newBlog = { ...blog, user: user._id }
+      return new Blog(newBlog)
+    })
+  const blogs = await Blog.insertMany(blogObjects)
+  user.blogs = blogs.map(b => b._id)
+  await user.save()
 })
 
 test('blogs are returned as json', async () => {
@@ -36,8 +44,12 @@ test('identifier property is named "id", not "_id"', async () => {
 })
 
 test('a valid blog can be added ', async () => {
+  const user = await User.findOne({ username: 'hellas' })
+  const token = helper.getToken(user)
+
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(helper.newBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
@@ -51,7 +63,17 @@ test('a valid blog can be added ', async () => {
   assert(titles.includes('Go To Statement Considered Harmful'))
 })
 
+test('without token provided, a valid blog cannot be added ', async () => {
+  await api
+    .post('/api/blogs')
+    .send(helper.newBlog)
+    .expect(401)
+})
+
 test('missing "likes" property defaults to "0" whenever a valid blog is added', async() => {
+  const user = await User.findOne({ username: 'hellas' })
+  const token = helper.getToken(user)
+
   const newBlog = {
     title: 'Go To Statement Considered Harmful',
     author: 'Edsger W. Dijkstra',
@@ -60,12 +82,16 @@ test('missing "likes" property defaults to "0" whenever a valid blog is added', 
 
   const response = await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(newBlog)
 
   assert.strictEqual(response.body.likes, 0)
 })
 
 test('blog without title is not added', async () => {
+  const user = await User.findOne({ username: 'hellas' })
+  const token = helper.getToken(user)
+
   const newBlog = {
     author: 'Edsger W. Dijkstra',
     url: 'https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf'
@@ -73,6 +99,7 @@ test('blog without title is not added', async () => {
 
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(newBlog)
     .expect(400)
 
@@ -81,6 +108,9 @@ test('blog without title is not added', async () => {
 })
 
 test('blog without url is not added', async () => {
+  const user = await User.findOne({ username: 'hellas' })
+  const token = helper.getToken(user)
+
   const newBlog = {
     title: 'Go To Statement Considered Harmful',
     author: 'Edsger W. Dijkstra'
@@ -88,6 +118,7 @@ test('blog without url is not added', async () => {
 
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(newBlog)
     .expect(400)
 
@@ -96,11 +127,15 @@ test('blog without url is not added', async () => {
 })
 
 test('deletion of a blog succeeds with status code 204 if id is valid', async () => {
+  const user = await User.findOne({ username: 'hellas' })
+  const token = helper.getToken(user)
+
   const blogsAtStart = await helper.blogsInDb()
   const blogToDelete = blogsAtStart[0]
 
   await api
     .delete(`/api/blogs/${blogToDelete.id}`)
+    .set('Authorization', `Bearer ${token}`)
     .expect(204)
 
   const blogsAtEnd = await helper.blogsInDb()
