@@ -48,9 +48,33 @@ const mostBlogs = (blogs) => {
   return sortedArray[0]
 }
 
+const mostLikes = (blogs) => {
+  if (blogs.length === 0) {
+    return null
+  }
+
+  const nbLikes = blogs
+    .reduce(
+      (acc, v) => {
+        acc[v.author] === undefined ? acc[v.author] = v.likes : acc[v.author] += v.likes
+        return acc
+      },
+      {}
+    )
+
+  const sortedArray = Object.entries(nbLikes)
+    .map(([k, v]) => {
+      return { author: k, likes: v }
+    })
+    .sort((a, b) => b.likes - a.likes)
+
+  return sortedArray[0]
+}
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
-  mostBlogs
+  mostBlogs,
+  mostLikes
 }
