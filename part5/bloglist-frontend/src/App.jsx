@@ -1,6 +1,7 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -12,6 +13,17 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [info, setInfo] = useState({ message: null})
+
+  const notifyWith = (message, type='info') => {
+    setInfo({
+      message, type
+    })
+
+    setTimeout(() => {
+      setInfo({ message: null} )
+    }, 3000)
+  }
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -28,20 +40,23 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      console.log('Wrong credentials')
+      notifyWith(exception.response.data.error, 'error')
     }
   }
   
   const createBlog = async (event) => {
     event.preventDefault()
-    
-    const blogObject = { title, author, url }
-  
-    const returnedBlog = await blogService.create(blogObject)
-    setBlogs(blogs.concat(returnedBlog))
-    setTitle('')
-    setAuthor('')
-    setUrl('')
+    try {
+      const blogObject = { title, author, url }
+      const returnedBlog = await blogService.create(blogObject)
+      setBlogs(blogs.concat(returnedBlog))
+      notifyWith(`a new blog ${returnedBlog.title} by ${returnedBlog.author} has been created!`)
+      setTitle('')
+      setAuthor('')
+      setUrl('')
+    } catch (exception) {
+      notifyWith(exception.response.data.error, 'error')
+    }
   }
 
   const logout = () => {
@@ -68,6 +83,7 @@ const App = () => {
     return (
       <>
         <h2>log in to application</h2>
+        <Notification info={info} />
         <form onSubmit={handleLogin}>
           <div>
             username
@@ -96,6 +112,7 @@ const App = () => {
   return (
     <>
       <h2>blogs</h2>
+      <Notification info={info} />
       <p>
         {`${user.name} logged in`}
         <button onClick={logout}>
