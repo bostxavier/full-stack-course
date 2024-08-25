@@ -15,9 +15,9 @@ describe('users', () => {
 
   test('a valid user can be added', async () => {
     const newUser = {
-      username: "newuser",
-      name: "New User",
-      password: "password"
+      username: 'newuser',
+      name: 'New User',
+      password: 'password'
     }
 
     const usersAtStart = await helper.usersInDb()
@@ -37,8 +37,8 @@ describe('users', () => {
 
   test('user without username is not added', async () => {
     const newUser = {
-      name: "New User",
-      password: "password"
+      name: 'New User',
+      password: 'password'
     }
 
     const usersAtStart = await helper.usersInDb()
@@ -55,8 +55,8 @@ describe('users', () => {
 
   test('user without password is not added', async () => {
     const newUser = {
-      username: "newuser",
-      name: "New User"
+      username: 'newuser',
+      name: 'New User'
     }
 
     const usersAtStart = await helper.usersInDb()
@@ -74,24 +74,24 @@ describe('users', () => {
 
   test.only('same username can not be addwd twice' , async () => {
     const newUser = {
-      username: "newuser",
-      name: "New User",
-      password: "password"
+      username: 'newuser',
+      name: 'New User',
+      password: 'password'
     }
-  
+
     await api
       .post('/api/users')
       .send(newUser)
-  
+
     const usersAtStart = await helper.usersInDb()
 
     await api
       .post('/api/users')
       .send(newUser)
       .expect(400)
-  
+
     const usersAtEnd = await helper.usersInDb()
-  
+
     assert.strictEqual(usersAtEnd.length, usersAtStart.length)
   })
 
