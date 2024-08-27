@@ -44,11 +44,19 @@ const App = () => {
   }
   
   const createBlog = async (blogObject) => {
-    console.log(blogObject)
     try {
       const returnedBlog = await blogService.create(blogObject)
       setBlogs(blogs.concat(returnedBlog))
       notifyWith(`a new blog ${returnedBlog.title} by ${returnedBlog.author} has been created!`)
+    } catch (exception) {
+      notifyWith(exception.response.data.error, 'error')
+    }
+  }
+
+  const updateBlog = async (blogId, blogObject) => {
+    try {
+      const returnedBlog = await blogService.update(blogId, blogObject)
+      setBlogs(blogs.map(b => b.id === blogId ? returnedBlog : b))
     } catch (exception) {
       notifyWith(exception.response.data.error, 'error')
     }
@@ -118,7 +126,7 @@ const App = () => {
         <BlogForm createBlog={createBlog} />
       </Togglable>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} user={user} />
+        <Blog key={blog.id} blog={blog} user={user} updateBlog={updateBlog} />
       )}
     </>
   )

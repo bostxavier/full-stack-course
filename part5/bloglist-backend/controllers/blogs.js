@@ -56,17 +56,28 @@ router.delete('/:id', userExtractor, async (request, response) => {
   response.status(204).end()
 })
 
-router.put('/:id', async (request, response) => {
+router.put('/:id', userExtractor, async (request, response) => {
+  const user = request.user
   const body = request.body
+  const id = request.params.id
 
   const blog = {
     title: body.title,
     author: body.author,
     url: body.url,
-    likes: body.likes
+    likes: body.likes,
+    user: user._id
   }
 
-  const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
+  const updatedBlog = await Blog.findByIdAndUpdate(id, blog, { new: true })
+
+  if (!updatedBlog) {
+    return response.status(404).send({ error: 'blog not found' })
+  }
+
+  user.blogs = user.blogs.map(b => b._id === id ? updatedBlog : b)
+  await user.save()
+
   response.json(updatedBlog)
 })
 
