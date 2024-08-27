@@ -1,4 +1,3 @@
-const jwt = require('jsonwebtoken')
 const router = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
@@ -56,8 +55,7 @@ router.delete('/:id', userExtractor, async (request, response) => {
   response.status(204).end()
 })
 
-router.put('/:id', userExtractor, async (request, response) => {
-  const user = request.user
+router.put('/:id', async (request, response) => {
   const body = request.body
   const id = request.params.id
 
@@ -66,15 +64,17 @@ router.put('/:id', userExtractor, async (request, response) => {
     author: body.author,
     url: body.url,
     likes: body.likes,
-    user: user._id
   }
 
-  const updatedBlog = await Blog.findByIdAndUpdate(id, blog, { new: true })
+  const updatedBlog = await Blog
+    .findByIdAndUpdate(id, blog, { new: true })
+    .populate('user', { username: 1, name: 1 })
 
   if (!updatedBlog) {
     return response.status(404).send({ error: 'blog not found' })
   }
 
+  const user = await User.findById(updatedBlog.user)
   user.blogs = user.blogs.map(b => b._id === id ? updatedBlog : b)
   await user.save()
 

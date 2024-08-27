@@ -82,6 +82,8 @@ const App = () => {
     }
   }, [])
 
+  console.log(blogs)
+
   if (user === null) {
     return (
       <>
@@ -122,13 +124,13 @@ const App = () => {
           logout
         </button>
       </p>
-      <Togglable buttonLabel='new note'>
+      <Togglable buttonLabel='new blog'>
         <BlogForm createBlog={createBlog} />
       </Togglable>
       {blogs
         .sort((a, b) => b.likes - a.likes)
         .map(blog =>
-          <Blog key={blog.id} blog={blog} user={user} updateBlog={updateBlog} />)
+          <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />)
       }
     </>
   )

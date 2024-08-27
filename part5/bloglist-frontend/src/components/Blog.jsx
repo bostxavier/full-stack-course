@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState } from 'react'
 
-const Blog = ({ blog, user, updateBlog }) => {
+const Blog = ({ blog, updateBlog }) => {
   const [showDetails, setShowDetails] = useState(false)
 
   const toggleShowDetails = () => setShowDetails(!showDetails)
@@ -41,8 +41,9 @@ const Blog = ({ blog, user, updateBlog }) => {
             <button onClick={addLike}>like</button>
           </div>
           <div>
-            {user.name}
+            {blog.user.name}
           </div>
+          <button style={{backgroundColor: '#008CBA'}}>remove</button>
         </>
       )}
     </div>
