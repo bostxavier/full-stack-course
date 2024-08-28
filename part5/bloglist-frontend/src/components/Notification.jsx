@@ -1,4 +1,4 @@
-import React from 'react'
+import PropTypes from 'prop-types'
 
 const Notification = ({ info }) => {
   if (!info.message) {
@@ -6,7 +6,7 @@ const Notification = ({ info }) => {
   }
 
   const style = {
-    color: info.type==='error' ? 'red' : 'green',
+    color: info.type ==='error' ? 'red' : 'green',
     background: 'lightgrey',
     fontSize: 20,
     borderStyle: 'solid',
@@ -20,6 +20,14 @@ const Notification = ({ info }) => {
       {info.message}
     </div>
   )
+}
+
+Notification.propTypes = {
+  info: PropTypes
+    .exact({
+      type: PropTypes.string,
+      message: PropTypes.string
+    })
 }
 
 export default Notification

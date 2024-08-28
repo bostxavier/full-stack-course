@@ -1,4 +1,3 @@
-import React from 'react'
 import { useState, useEffect } from 'react'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
@@ -12,7 +11,7 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [info, setInfo] = useState({ message: null})
+  const [info, setInfo] = useState({ message: null })
 
   const notifyWith = (message, type='info') => {
     setInfo({
@@ -20,7 +19,7 @@ const App = () => {
     })
 
     setTimeout(() => {
-      setInfo({ message: null} )
+      setInfo({ message: null } )
     }, 3000)
   }
 
@@ -33,7 +32,7 @@ const App = () => {
 
       window.localStorage.setItem(
         'loggedBloglistappUser', JSON.stringify(user)
-      ) 
+      )
       setUser(user)
       blogService.setToken(user.token)
       setUsername('')
@@ -42,7 +41,7 @@ const App = () => {
       notifyWith(exception.response.data.error, 'error')
     }
   }
-  
+
   const createBlog = async (blogObject) => {
     try {
       const returnedBlog = await blogService.create(blogObject)
@@ -73,13 +72,13 @@ const App = () => {
 
   const logout = () => {
     setUser(null)
-    window.localStorage.removeItem('loggedBloglistappUser') 
+    window.localStorage.removeItem('loggedBloglistappUser')
   }
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   useEffect(() => {

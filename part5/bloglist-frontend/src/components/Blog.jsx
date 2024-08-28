@@ -1,4 +1,3 @@
-import React from 'react'
 import { useState } from 'react'
 
 const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
@@ -50,7 +49,7 @@ const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
           <div>
             {blog.user.name}
           </div>
-          {blog.username === user.username && <button style={{backgroundColor: '#008CBA'}} onClick={removeBlog}>remove</button>}
+          {blog.user.name === user.name && <button style={{backgroundColor: '#008CBA'}} onClick={removeBlog}>remove</button>}
         </>
       )}
     </div>
