@@ -49,7 +49,7 @@ const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
           <div>
             {blog.user.name}
           </div>
-          {blog.user.name === user.name && <button style={{backgroundColor: '#008CBA'}} onClick={removeBlog}>remove</button>}
+          {blog.user.name === user.name && <button style={{ backgroundColor: '#008CBA' }} onClick={removeBlog}>remove</button>}
         </>
       )}
     </div>
