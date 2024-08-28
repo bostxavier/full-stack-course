@@ -1,10 +1,17 @@
 import React from 'react'
 import { useState } from 'react'
 
-const Blog = ({ blog, updateBlog }) => {
+const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
   const [showDetails, setShowDetails] = useState(false)
 
   const toggleShowDetails = () => setShowDetails(!showDetails)
+
+  const removeBlog = () => {
+    const confirm = window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)
+    if (confirm) {
+      deleteBlog(blog.id)
+    }
+  }
 
   const addLike = () => {
     const updatedBlog = {
@@ -43,7 +50,7 @@ const Blog = ({ blog, updateBlog }) => {
           <div>
             {blog.user.name}
           </div>
-          <button style={{backgroundColor: '#008CBA'}}>remove</button>
+          {blog.username === user.username && <button style={{backgroundColor: '#008CBA'}} onClick={removeBlog}>remove</button>}
         </>
       )}
     </div>

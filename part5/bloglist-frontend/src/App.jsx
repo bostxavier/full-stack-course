@@ -62,6 +62,15 @@ const App = () => {
     }
   }
 
+  const deleteBlog = async (blogId) => {
+    try {
+      await blogService.remove(blogId)
+      setBlogs(blogs.filter(b => b.id !== blogId))
+    } catch (exception) {
+      notifyWith(exception.response.data.error, 'error')
+    }
+  }
+
   const logout = () => {
     setUser(null)
     window.localStorage.removeItem('loggedBloglistappUser') 
@@ -81,8 +90,6 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
-
-  console.log(blogs)
 
   if (user === null) {
     return (
@@ -130,7 +137,13 @@ const App = () => {
       {blogs
         .sort((a, b) => b.likes - a.likes)
         .map(blog =>
-          <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />)
+          <Blog
+            key={blog.id}
+            blog={blog}
+            updateBlog={updateBlog}
+            deleteBlog={deleteBlog}
+            user={user}
+          />)
       }
     </>
   )
