@@ -37,4 +37,22 @@ describe('Blog app', () => {
       await expect(page.getByText('invalid username or password')).toBeVisible()
     })
   })
+
+  describe('When logged in', () => {
+    beforeEach(async ({ page }) => {
+      await page.getByTestId('username').fill('testuser')
+      await page.getByTestId('password').fill('password')
+      await page.getByRole('button', { name: 'login' }).click()
+    })
+  
+    test('a new blog can be created', async ({ page }) => {
+      await page.getByRole('button', { name: 'new blog' }).click()
+      await page.getByTestId('title').fill('Comment configurer et utiliser efficacement l’historique bash')
+      await page.getByTestId('author').fill('Alexis Madrzejewski')
+      await page.getByTestId('url').fill('https://blog.madrzejewski.com/astuce-historique-bash-linux')
+      await page.getByRole('button', { name: 'create' }).click()
+
+      await expect(page.getByText('Comment configurer et utiliser efficacement l’historique bash Alexis Madrzejewski')).toBeVisible()
+    })
+  })
 })
