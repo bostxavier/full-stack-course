@@ -10,6 +10,13 @@ describe('Blog app', () => {
         password: 'password'
       }
     })
+    await request.post('http://localhost:3003/api/users', {
+      data: {
+        name: 'Arto Hellas',
+        username: 'hellas',
+        password: 'password2'
+      }
+    })
 
     await page.goto('http://localhost:5173')
   })
@@ -79,6 +86,15 @@ describe('Blog app', () => {
         await page.getByRole('button', { name: 'view' }).click()
         await page.getByRole('button', { name: 'remove' }).click()
         await expect(page.getByText('Comment configurer et utiliser efficacement l’historique bash Alexis Madrzejewski')).not.toBeVisible()
+      })
+
+      test.only('a user that did not add the blog cannot see the remove button', async ({ page }) => {
+        await page.getByRole('button', { name: 'logout' }).click()
+        await page.getByTestId('username').fill('hellas')
+        await page.getByTestId('password').fill('password2')
+        await page.getByRole('button', { name: 'login' }).click()
+        await page.getByRole('button', { name: 'view' }).click()
+        await expect(page.getByRole('button', { name: 'remove' })).not.toBeVisible()
       })
     })
   })
