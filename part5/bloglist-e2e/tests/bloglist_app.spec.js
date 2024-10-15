@@ -69,6 +69,17 @@ describe('Blog app', () => {
         await page.getByRole('button', { name: 'like' }).click()
         await expect(page.getByText('likes 1')).toBeVisible()
       })
+
+      test('blog can be deleted by the user who added it', async ({ page }) => {
+        page.on('dialog', async (dialog) => {
+          expect(dialog.message()).toContain('Remove blog Comment configurer et utiliser efficacement l’historique bash by Alexis Madrzejewski?')
+          await dialog.accept()
+        })
+
+        await page.getByRole('button', { name: 'view' }).click()
+        await page.getByRole('button', { name: 'remove' }).click()
+        await expect(page.getByText('Comment configurer et utiliser efficacement l’historique bash Alexis Madrzejewski')).not.toBeVisible()
+      })
     })
   })
 })
