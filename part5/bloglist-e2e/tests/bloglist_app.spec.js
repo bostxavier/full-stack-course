@@ -54,5 +54,21 @@ describe('Blog app', () => {
 
       await expect(page.getByText('Comment configurer et utiliser efficacement l’historique bash Alexis Madrzejewski')).toBeVisible()
     })
+
+    describe('and a blog exists', () => {
+      beforeEach(async ({ page }) => {
+        await page.getByRole('button', { name: 'new blog' }).click()
+        await page.getByTestId('title').fill('Comment configurer et utiliser efficacement l’historique bash')
+        await page.getByTestId('author').fill('Alexis Madrzejewski')
+        await page.getByTestId('url').fill('https://blog.madrzejewski.com/astuce-historique-bash-linux')
+        await page.getByRole('button', { name: 'create' }).click()
+      })
+  
+      test('blog can be liked', async ({ page }) => {
+        await page.getByRole('button', { name: 'view' }).click()
+        await page.getByRole('button', { name: 'like' }).click()
+        await expect(page.getByText('likes 1')).toBeVisible()
+      })
+    })
   })
 })
