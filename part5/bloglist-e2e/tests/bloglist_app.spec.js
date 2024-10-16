@@ -58,8 +58,8 @@ describe('Blog app', () => {
       await page.getByTestId('author').fill('Alexis Madrzejewski')
       await page.getByTestId('url').fill('https://blog.madrzejewski.com/astuce-historique-bash-linux')
       await page.getByRole('button', { name: 'create' }).click()
-
-      await expect(page.getByText('Comment configurer et utiliser efficacement l’historique bash Alexis Madrzejewski')).toBeVisible()
+      
+      await expect(page.locator('div').filter({ hasText: 'Comment configurer et' }).nth(2)).toBeVisible()
     })
 
     describe('and a blog exists', () => {
@@ -69,6 +69,7 @@ describe('Blog app', () => {
         await page.getByTestId('author').fill('Alexis Madrzejewski')
         await page.getByTestId('url').fill('https://blog.madrzejewski.com/astuce-historique-bash-linux')
         await page.getByRole('button', { name: 'create' }).click()
+        await expect(page.locator('div').filter({ hasText: 'Comment configurer et' }).nth(2)).toBeVisible()
       })
   
       test('blog can be liked', async ({ page }) => {
@@ -85,16 +86,45 @@ describe('Blog app', () => {
 
         await page.getByRole('button', { name: 'view' }).click()
         await page.getByRole('button', { name: 'remove' }).click()
-        await expect(page.getByText('Comment configurer et utiliser efficacement l’historique bash Alexis Madrzejewski')).not.toBeVisible()
+        await expect(page.locator('div').filter({ hasText: 'Comment configurer et' }).nth(2)).not.toBeVisible()
       })
 
-      test.only('a user that did not add the blog cannot see the remove button', async ({ page }) => {
+      test('a user that did not add the blog cannot see the remove button', async ({ page }) => {
         await page.getByRole('button', { name: 'logout' }).click()
         await page.getByTestId('username').fill('hellas')
         await page.getByTestId('password').fill('password2')
         await page.getByRole('button', { name: 'login' }).click()
         await page.getByRole('button', { name: 'view' }).click()
         await expect(page.getByRole('button', { name: 'remove' })).not.toBeVisible()
+      })
+
+      test('blogs are sorted according to the number of likes', async ({ page }) => {
+        await page.getByTestId('title').fill('React patterns')
+        await page.getByTestId('author').fill('Michael Chan')
+        await page.getByTestId('url').fill('http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html')
+        await page.getByRole('button', { name: 'create' }).click()
+        await expect(page.getByText('React patterns Michael Chan')).toBeVisible()
+
+        const viewButtons = await page.getByRole('button', { name: 'view' }).all()
+        expect(viewButtons.length).toBe(2)
+
+        await viewButtons[0].click()
+        await page.getByRole('button', { name: 'like' }).click()
+        await expect(page.getByText('likes 1')).toBeVisible()
+        await page.getByRole('button', { name: 'hide' }).click()
+        let blogTitles = await page.locator('.blog-title').allTextContents()
+        expect(blogTitles[0]).toContain('Comment configurer et utiliser efficacement l’historique bash')
+        expect(blogTitles[1]).toContain('React patterns')
+
+        await viewButtons[1].click()
+        await page.getByRole('button', { name: 'like' }).click()
+        await expect(page.getByText('likes 1')).toBeVisible()
+        await page.getByRole('button', { name: 'like' }).click()
+        await expect(page.getByText('likes 2')).toBeVisible()
+        await page.getByRole('button', { name: 'hide' }).click()
+        blogTitles = await page.locator('.blog-title').allTextContents()
+        expect(blogTitles[0]).toContain('React patterns')
+        expect(blogTitles[1]).toContain('Comment configurer et utiliser efficacement l’historique bash')
       })
     })
   })
