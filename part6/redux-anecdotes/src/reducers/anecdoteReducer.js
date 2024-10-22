@@ -1,13 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-const asObject = (anecdote) => {
-  return {
-    content: anecdote,
-    id: 0,
-    votes: 0
-  }
-}
-
 const initialState = []
 
 const anecdoteSlice = createSlice({
@@ -27,7 +19,7 @@ const anecdoteSlice = createSlice({
                 .sort((a, b) => b.votes - a.votes)
       },
       createAnecdote(state, action) {
-        const newAnecdote = asObject(action.payload)
+        const newAnecdote = action.payload
         state.push(newAnecdote)
       },
       setAnecdotes(state, action) {
